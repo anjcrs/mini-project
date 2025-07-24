@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Pixel Perfect Tasks</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="pixel-art"></div>
+            <h1 class="title">PIXEL PERFECT TASKS</h1>
+            <p class="subtitle">Your minimalist pixel-themed todo companion</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <div class="input-row">
+                    <div class="input-field">
+                        <label for="taskInput">Task Name</label>
+                        <input type="text" id="taskInput" placeholder="Enter your task...">
+                    </div>
+                    <div class="input-field">
+                        <label for="dateInput">Due Date</label>
+                        <input type="date" id="dateInput">
+                    </div>
+                    <button class="btn btn-primary" onclick="addTask()">ADD TASK</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tasks-section">
+            <div class="tasks-header">
+                <div class="task-count">
+                    <span id="taskCount">0 TASKS</span>
+                </div>
+                <div class="filter-buttons">
+                    <button class="btn btn-secondary" onclick="filterTasks('all')">ALL</button>
+                    <button class="btn btn-secondary" onclick="filterTasks('pending')">PENDING</button>
+                    <button class="btn btn-secondary" onclick="filterTasks('completed')">COMPLETED</button>
+                </div>
+            </div>
+
+            <div id="tasksList" class="tasks-list">
+                <div class="empty-state">
+                    <div class="empty-pixel-art"></div>
+                    <p>NO TASKS YET!</p>
+                    <p style="font-size: 6px; margin-top: 10px;">Add your first task above</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
