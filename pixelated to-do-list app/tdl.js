@@ -7,11 +7,11 @@ document.addEventListener('DOMContentLoaded', function() {
     loadTasks();
     renderTasks();
     updateTaskCount();
-    
+
     // Set today's date as default
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('dateInput').value = today;
-    
+
     // Add Enter key support for task input
     document.getElementById('taskInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -24,20 +24,20 @@ document.addEventListener('DOMContentLoaded', function() {
 function addTask() {
     const taskInput = document.getElementById('taskInput');
     const dateInput = document.getElementById('dateInput');
-    
+
     const taskName = taskInput.value.trim();
     const dueDate = dateInput.value;
-    
+
     if (!taskName) {
         showNotification('Please enter a task name!', 'error');
         return;
     }
-    
+
     if (!dueDate) {
         showNotification('Please select a due date!', 'error');
         return;
     }
-    
+
     const newTask = {
         id: Date.now(),
         name: taskName,
@@ -45,16 +45,16 @@ function addTask() {
         completed: false,
         createdAt: new Date().toISOString()
     };
-    
+
     tasks.unshift(newTask); // Add to beginning for newest first
     saveTasks();
     renderTasks();
     updateTaskCount();
-    
+
     // Clear inputs
     taskInput.value = '';
     dateInput.value = new Date().toISOString().split('T')[0];
-    
+
     showNotification('Task added successfully! ✨', 'success');
 }
 
@@ -66,7 +66,7 @@ function toggleTask(id) {
         saveTasks();
         renderTasks();
         updateTaskCount();
-        
+
         const message = task.completed ? 'Task completed! 🎉' : 'Task marked as pending! 📝';
         showNotification(message, 'success');
     }
@@ -75,10 +75,10 @@ function toggleTask(id) {
 // Delete task
 function deleteTask(id) {
     const taskElement = document.querySelector(`[data-id="${id}"]`);
-    
+
     if (taskElement) {
         taskElement.classList.add('task-exit');
-        
+
         setTimeout(() => {
             tasks = tasks.filter(t => t.id !== id);
             saveTasks();
@@ -92,16 +92,16 @@ function deleteTask(id) {
 // Filter tasks
 function filterTasks(filter) {
     currentFilter = filter;
-    
+
     // Update active filter button
     document.querySelectorAll('.btn-secondary').forEach(btn => {
         btn.style.opacity = '0.7';
         btn.style.transform = 'scale(1)';
     });
-    
+
     event.target.style.opacity = '1';
     event.target.style.transform = 'scale(1.05)';
-    
+
     renderTasks();
 }
 
@@ -109,7 +109,7 @@ function filterTasks(filter) {
 function renderTasks() {
     const tasksList = document.getElementById('tasksList');
     let filteredTasks = [];
-    
+
     switch (currentFilter) {
         case 'completed':
             filteredTasks = tasks.filter(t => t.completed);
@@ -120,7 +120,7 @@ function renderTasks() {
         default:
             filteredTasks = tasks;
     }
-    
+
     if (filteredTasks.length === 0) {
         tasksList.innerHTML = `
             <div class="empty-state">
@@ -133,12 +133,12 @@ function renderTasks() {
         `;
         return;
     }
-    
+
     tasksList.innerHTML = filteredTasks.map(task => {
         const dueDate = new Date(task.dueDate);
         const today = new Date();
         const isOverdue = dueDate < today && !task.completed;
-        
+
         return `
             <div class="task-item ${task.completed ? 'completed' : ''} task-enter" data-id="${task.id}">
                 <div class="task-content">
@@ -167,9 +167,9 @@ function updateTaskCount() {
     const totalTasks = tasks.length;
     const completedTasks = tasks.filter(t => t.completed).length;
     const pendingTasks = totalTasks - completedTasks;
-    
+
     const taskCountElement = document.getElementById('taskCount');
-    
+
     let countText = '';
     switch (currentFilter) {
         case 'completed':
@@ -181,17 +181,17 @@ function updateTaskCount() {
         default:
             countText = `${totalTasks} TOTAL TASKS`;
     }
-    
+
     taskCountElement.textContent = countText;
 }
 
 // Format date for display
 function formatDate(dateString) {
     const date = new Date(dateString);
-    const options = { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric' 
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
     };
     return date.toLocaleDateString('en-US', options);
 }
@@ -201,12 +201,12 @@ function showNotification(message, type = 'success') {
     const notification = document.getElementById('notification');
     notification.textContent = message;
     notification.className = `notification ${type}`;
-    
+
     // Show notification
     setTimeout(() => {
         notification.classList.add('show');
     }, 100);
-    
+
     // Hide notification after 3 seconds
     setTimeout(() => {
         notification.classList.remove('show');
@@ -218,7 +218,7 @@ function showNotification(message, type = 'success') {
 function saveTasks() {
     // In a real browser environment, you would use:
     // localStorage.setItem('pixelTasks', JSON.stringify(tasks));
-    
+
     // For this demo, tasks are stored in memory only
     console.log('Tasks saved:', tasks);
 }
@@ -230,7 +230,7 @@ function loadTasks() {
     // if (savedTasks) {
     //     tasks = JSON.parse(savedTasks);
     // }
-    
+
     // For this demo, we'll start with sample tasks
     if (tasks.length === 0) {
         tasks = [
