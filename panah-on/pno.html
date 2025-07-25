@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Weather App</title>
+    <style>
+        /* My CSS Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .weather-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+        }
+
+        .app-title {
+            font-size: 2.5rem;
+            color: #0984e3;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .search-container {
+            margin: 2rem 0;
+        }
+
+        .search-input {
+            width: 70%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #74b9ff;
+            box-shadow: 0 0 10px rgba(116, 185, 255, 0.3);
+        }
+
+        .search-btn {
+            width: 25%;
+            padding: 15px;
+            margin-left: 10px;
+            background: #74b9ff;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .search-btn:hover {
+            background: #0984e3;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            display: none;
+            margin: 2rem 0;
+            font-size: 1.2rem;
+            color: #74b9ff;
+        }
+
+        .weather-display {
+            display: none;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .weather-location {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .weather-temp {
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .weather-condition {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            text-transform: capitalize;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .weather-detail {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .error-message {
+            display: none;
+            background: #ff7675;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* My responsive design */
+        @media (max-width: 600px) {
+            .search-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .search-btn {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .weather-details {
+                grid-template-columns: 1fr;
+            }
+
+            .weather-temp {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-container">
+        <h1 class="app-title">🌤️ My Weather App</h1>
+        <p>Built with Django, HTML, CSS & JavaScript</p>
+
+        <div class="search-container">
+            <input type="text" id="cityInput" class="search-input" placeholder="Enter city name..." />
+            <button id="searchBtn" class="search-btn">Search</button>
+        </div>
+
+        <div id="loading" class="loading">
+            🔄 Getting weather data...
+        </div>
+
+        <div id="weatherDisplay" class="weather-display">
+            <div id="weatherLocation" class="weather-location"></div>
+            <div id="weatherTemp" class="weather-temp"></div>
+            <div id="weatherCondition" class="weather-condition"></div>
+
+            <div class="weather-details">
+                <div class="weather-detail">
+                    <div class="detail-label">Feels Like</div>
+                    <div id="feelsLike" class="detail-value"></div>
+                </div>
+                <div class="weather-detail">
+                    <div class="detail-label">Humidity</div>
+                    <div id="humidity" class="detail-value"></div>
+                </div>
+                <div class="weather-detail">
+                    <div class="detail-label">Wind Speed</div>
+                    <div id="windSpeed" class="detail-value"></div>
+                </div>
+                <div class="weather-detail">
+                    <div class="detail-label">Pressure</div>
+                    <div id="pressure" class="detail-value"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <div class="footer">
+            <p>Free weather data from OpenWeatherMap</p>
+            <p>Created by me using Django framework 🚀</p>
+        </div>
+    </div>
+
+    <script>
+        // My JavaScript code to handle the weather app functionality
+
+        class WeatherApp {
+            constructor() {
+                // I set up my elements and event listeners
+                this.cityInput = document.getElementById('cityInput');
+                this.searchBtn = document.getElementById('searchBtn');
+                this.loading = document.getElementById('loading');
+                this.weatherDisplay = document.getElementById('weatherDisplay');
+                this.errorMessage = document.getElementById('errorMessage');
+
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                // I handle the search button click
+                this.searchBtn.addEventListener('click', () => {
+                    this.searchWeather();
+                });
+
+                // I handle pressing Enter in the input field
+                this.cityInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.searchWeather();
+                    }
+                });
+            }
+
+            async searchWeather() {
+                const city = this.cityInput.value.trim();
+
+                if (!city) {
+                    this.showError('I need you to enter a city name!');
+                    return;
+                }
+
+                this.showLoading();
+                this.hideError();
+                this.hideWeatherDisplay();
+
+                try {
+                    // I send a request to my Django backend
+                    const response = await fetch('/api/weather/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ city: city })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.displayWeather(data.data);
+                    } else {
+                        this.showError(data.error || 'I could not get weather data');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    this.showError('Something went wrong. Please check your internet connection.');
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            displayWeather(weatherData) {
+                // I update the weather display with the data I received
+                document.getElementById('weatherLocation').textContent =
+                    `${weatherData.city}, ${weatherData.country}`;
+                document.getElementById('weatherTemp').textContent =
+                    `${weatherData.temperature}°C`;
+                document.getElementById('weatherCondition').textContent =
+                    weatherData.description;
+                document.getElementById('feelsLike').textContent =
+                    `${weatherData.feels_like}°C`;
+                document.getElementById('humidity').textContent =
+                    `${weatherData.humidity}%`;
+                document.getElementById('windSpeed').textContent =
+                    `${weatherData.wind_speed} m/s`;
+                document.getElementById('pressure').textContent =
+                    `${weatherData.pressure} hPa`;
+
+                this.showWeatherDisplay();
+            }
+
+            showLoading() {
+                this.loading.style.display = 'block';
+            }
+
+            hideLoading() {
+                this.loading.style.display = 'none';
+            }
+
+            showWeatherDisplay() {
+                this.weatherDisplay.style.display = 'block';
+            }
+
+            hideWeatherDisplay() {
+                this.weatherDisplay.style.display = 'none';
+            }
+
+            showError(message) {
+                this.errorMessage.textContent = message;
+                this.errorMessage.style.display = 'block';
+            }
+
+            hideError() {
+                this.errorMessage.style.display = 'none';
+            }
+        }
+
+        // I initialize my weather app when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new WeatherApp();
+        });
+    </script>
+</body>
+</html>
